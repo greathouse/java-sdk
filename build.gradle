@@ -12,17 +12,23 @@ repositories {
 }
 
 dependencies {
-    api 'com.squareup.okhttp3:okhttp:4.12.0'
-    api 'com.fasterxml.jackson.core:jackson-databind:2.17.2'
-    api 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.17.2'
-    api 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.17.2'
+    api 'com.squareup.okhttp3:okhttp:5.2.1'
+    api 'com.fasterxml.jackson.core:jackson-databind:2.18.6'
+    api 'com.fasterxml.jackson.datatype:jackson-datatype-jdk8:2.18.6'
+    api 'com.fasterxml.jackson.datatype:jackson-datatype-jsr310:2.18.6'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.8.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-engine:5.8.2'
+    testImplementation 'org.junit.jupiter:junit-jupiter-params:5.8.2'
 }
 
 
 sourceCompatibility = 1.8
 targetCompatibility = 1.8
+
+tasks.withType(Javadoc) {
+    failOnError false
+    options.addStringOption('Xdoclint:none', '-quiet')
+}
 
 spotless {
     java {
@@ -30,13 +36,28 @@ spotless {
     }
 }
 
+
 java {
     withSourcesJar()
     withJavadocJar()
 }
 
-javadoc {
-    options.addStringOption('Xdoclint:none', '-quiet') // Ignore error when `<pre>{@code` is in the javadoc
+
+group = 'dev.basis-theory'
+
+version = '0.0.1'
+
+jar {
+    dependsOn(":generatePomFileForMavenPublication")
+    archiveBaseName = "basis-theory-java-sdk"
+}
+
+sourcesJar {
+    archiveBaseName = "basis-theory-java-sdk"
+}
+
+javadocJar {
+    archiveBaseName = "basis-theory-java-sdk"
 }
 
 test {
@@ -49,22 +70,30 @@ test {
 publishing {
     publications {
         maven(MavenPublication) {
-            groupId "com.basistheory"
-            artifactId "api-client"
-            version = project.hasProperty('version') ? project.version : 'default-version'
+            groupId = 'dev.basis-theory'
+            artifactId = 'basis-theory-java-sdk'
+            version = '0.0.1'
             from components.java
+            pom {
+                licenses {
+                    license {
+                        name = 'APACHE-2.0'
+                    }
+                }
+                scm {
+                    connection = 'scm:git:git://github.com/greathouse/java-sdk.git'
+                    developerConnection = 'scm:git:git://github.com/greathouse/java-sdk.git'
+                    url = 'https://github.com/greathouse/java-sdk'
+                }
+            }
         }
-
     }
-
     repositories {
         maven {
-            name "GithubPackages"
-            url uri("https://maven.pkg.github.com/basis-theory/java-sdk")
-
+            url "$System.env.MAVEN_PUBLISH_REGISTRY_URL"
             credentials {
-                username = "platform@basistheory.com"
-                password = properties["GITHUB_TOKEN"] ?: System.getenv("GITHUB_TOKEN")
+                username "$System.env.MAVEN_USERNAME"
+                password "$System.env.MAVEN_PASSWORD"
             }
         }
     }

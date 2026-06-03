@@ -1,6 +1,6 @@
 # Reference
 ## Applications
-<details><summary><code>client.applications.list() -> ApplicationPaginatedList</code></summary>
+<details><summary><code>client.applications.list() -> SyncPagingIterable&amp;lt;Application&amp;gt;</code></summary>
 <dl>
 <dd>
 
@@ -16,6 +16,15 @@
 client.applications().list(
     ApplicationsListRequest
         .builder()
+        .id(
+            Arrays.asList("id")
+        )
+        .type(
+            Arrays.asList("type")
+        )
+        .page(1)
+        .start("start")
+        .size(1)
         .build()
 );
 ```
@@ -347,6 +356,12 @@ client.applicationKeys().list(
     "id",
     ApplicationKeysListRequest
         .builder()
+        .id(
+            Arrays.asList("id")
+        )
+        .type(
+            Arrays.asList("type")
+        )
         .build()
 );
 ```
@@ -890,6 +905,7 @@ client.googlePay().delete("id");
 
 ```java
 client.documents().upload(
+    null,
     DocumentsUploadRequest
         .builder()
         .build()
@@ -1311,7 +1327,7 @@ client.tokens().create(
 </dl>
 </details>
 
-<details><summary><code>client.tokens.listV2() -> TokenCursorPaginatedList</code></summary>
+<details><summary><code>client.tokens.listV2() -> SyncPagingIterable&amp;lt;Token&amp;gt;</code></summary>
 <dl>
 <dd>
 
@@ -1327,6 +1343,11 @@ client.tokens().create(
 client.tokens().listV2(
     TokensListV2Request
         .builder()
+        .type("type")
+        .container("container")
+        .fingerprint("fingerprint")
+        .start("start")
+        .size(1)
         .build()
 );
 ```
@@ -1395,7 +1416,7 @@ client.tokens().listV2(
 </dl>
 </details>
 
-<details><summary><code>client.tokens.searchV2(request) -> TokenCursorPaginatedList</code></summary>
+<details><summary><code>client.tokens.searchV2(request) -> SyncPagingIterable&amp;lt;Token&amp;gt;</code></summary>
 <dl>
 <dd>
 
@@ -1713,7 +1734,7 @@ client.keys().delete("id");
 </details>
 
 ## Logs
-<details><summary><code>client.logs.list() -> LogPaginatedList</code></summary>
+<details><summary><code>client.logs.list() -> SyncPagingIterable&amp;lt;Log&amp;gt;</code></summary>
 <dl>
 <dd>
 
@@ -1729,6 +1750,13 @@ client.keys().delete("id");
 client.logs().list(
     LogsListRequest
         .builder()
+        .entityType("entity_type")
+        .entityId("entity_id")
+        .startDate(OffsetDateTime.parse("2024-01-15T09:30:00Z"))
+        .endDate(OffsetDateTime.parse("2024-01-15T09:30:00Z"))
+        .page(1)
+        .start("start")
+        .size(1)
         .build()
 );
 ```
@@ -2140,6 +2168,7 @@ client.networkTokens().resume("id");
 client.permissions().list(
     PermissionsListRequest
         .builder()
+        .applicationType("application_type")
         .build()
 );
 ```
@@ -2169,7 +2198,7 @@ client.permissions().list(
 </details>
 
 ## Proxies
-<details><summary><code>client.proxies.list() -> ProxyPaginatedList</code></summary>
+<details><summary><code>client.proxies.list() -> SyncPagingIterable&amp;lt;Proxy&amp;gt;</code></summary>
 <dl>
 <dd>
 
@@ -2185,6 +2214,13 @@ client.permissions().list(
 client.proxies().list(
     ProxiesListRequest
         .builder()
+        .id(
+            Arrays.asList("id")
+        )
+        .name("name")
+        .page(1)
+        .start("start")
+        .size(1)
         .build()
 );
 ```
@@ -2728,7 +2764,7 @@ client.proxies().patch(
 </details>
 
 ## Reactors
-<details><summary><code>client.reactors.list() -> ReactorPaginatedList</code></summary>
+<details><summary><code>client.reactors.list() -> SyncPagingIterable&amp;lt;Reactor&amp;gt;</code></summary>
 <dl>
 <dd>
 
@@ -2744,6 +2780,13 @@ client.proxies().patch(
 client.reactors().list(
     ReactorsListRequest
         .builder()
+        .id(
+            Arrays.asList("id")
+        )
+        .name("name")
+        .page(1)
+        .start("start")
+        .size(1)
         .build()
 );
 ```
@@ -3671,9 +3714,7 @@ client.webhooks().update(
         .name("webhook-update")
         .url("http://www.example.com")
         .events(
-            new ArrayList<String>(
-                Arrays.asList("token:created")
-            )
+            Arrays.asList("token:created")
         )
         .build()
 );
@@ -3861,9 +3902,7 @@ client.webhooks().create(
         .name("webhook-create")
         .url("http://www.example.com")
         .events(
-            new ArrayList<String>(
-                Arrays.asList("token:created")
-            )
+            Arrays.asList("token:created")
         )
         .build()
 );
@@ -4002,6 +4041,8 @@ Returns a list of account updater batch jobs
 client.accountUpdater().jobs().list(
     JobsListRequest
         .builder()
+        .size(1)
+        .start("start")
         .build()
 );
 ```
@@ -4416,7 +4457,7 @@ client.agentic().agents().update(
 </details>
 
 ## Agentic Enrollments
-<details><summary><code>client.agentic.enrollments.list() -> EnrollmentList</code></summary>
+<details><summary><code>client.agentic.enrollments.list() -> SyncPagingIterable&amp;lt;Enrollment&amp;gt;</code></summary>
 <dl>
 <dd>
 
@@ -4446,6 +4487,8 @@ List all enrollments for the current tenant with cursor-based pagination.
 client.agentic().enrollments().list(
     EnrollmentsListRequest
         .builder()
+        .limit(1)
+        .cursor("cursor")
         .build()
 );
 ```
@@ -4740,7 +4783,7 @@ client.agentic().enrollments().retry("enrollment_id");
 </details>
 
 ## Agentic Agents Instructions
-<details><summary><code>client.agentic.agents.instructions.list(agentId) -> InstructionList</code></summary>
+<details><summary><code>client.agentic.agents.instructions.list(agentId) -> SyncPagingIterable&amp;lt;Instruction&amp;gt;</code></summary>
 <dl>
 <dd>
 
@@ -4771,6 +4814,9 @@ client.agentic().agents().instructions().list(
     "agent_id",
     InstructionsListRequest
         .builder()
+        .enrollmentId("enrollment_id")
+        .limit(1)
+        .cursor("cursor")
         .build()
 );
 ```
@@ -6827,7 +6873,7 @@ client.tenants().connections().delete();
 </details>
 
 ## Tenants Invitations
-<details><summary><code>client.tenants.invitations.list() -> TenantInvitationResponsePaginatedList</code></summary>
+<details><summary><code>client.tenants.invitations.list() -> SyncPagingIterable&amp;lt;TenantInvitationResponse&amp;gt;</code></summary>
 <dl>
 <dd>
 
@@ -6843,6 +6889,10 @@ client.tenants().connections().delete();
 client.tenants().invitations().list(
     InvitationsListRequest
         .builder()
+        .status(TenantInvitationStatus.PENDING)
+        .page(1)
+        .start("start")
+        .size(1)
         .build()
 );
 ```
@@ -7085,6 +7135,12 @@ client.tenants().invitations().delete("invitationId");
 client.tenants().members().list(
     MembersListRequest
         .builder()
+        .userId(
+            Arrays.asList("user_id")
+        )
+        .page(1)
+        .start("start")
+        .size(1)
         .build()
 );
 ```
@@ -7232,7 +7288,7 @@ client.tenants().members().delete("memberId");
 </details>
 
 ## Tenants Merchants
-<details><summary><code>client.tenants.merchants.list(tenantId) -> TenantMerchantPaginatedList</code></summary>
+<details><summary><code>client.tenants.merchants.list(tenantId) -> SyncPagingIterable&amp;lt;TenantMerchant&amp;gt;</code></summary>
 <dl>
 <dd>
 
@@ -7249,6 +7305,9 @@ client.tenants().merchants().list(
     "tenantId",
     MerchantsListRequest
         .builder()
+        .page(1)
+        .start("start")
+        .size(1)
         .build()
 );
 ```
@@ -8056,3 +8115,4 @@ client.webhooks().events().list();
 </dd>
 </dl>
 </details>
+
