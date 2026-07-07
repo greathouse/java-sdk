@@ -8,7 +8,7 @@
     "enable-forward-compatible-enums": false,
     "retry-status-codes": "legacy"
   },
-  "originGitCommit": "b404778edc1cf2db316e67343d3722a019fd2f23",
+  "originGitCommit": "0a8c6a4f1226ee1aa182b502c3bf8774408d6670",
   "originGitCommitIsDirty": false,
   "invokedBy": "ci",
   "requestedVersion": "0.0.1",
