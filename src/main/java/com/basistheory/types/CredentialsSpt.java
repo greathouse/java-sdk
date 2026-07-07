@@ -18,27 +18,26 @@ import java.util.Objects;
 import java.util.Optional;
 
 @JsonInclude(JsonInclude.Include.NON_ABSENT)
-@JsonDeserialize(builder = ApplePayTokenizeRequest.Builder.class)
-public final class ApplePayTokenizeRequest {
-    private final Optional<ApplePayMethodToken> applePaymentMethodToken;
+@JsonDeserialize(builder = CredentialsSpt.Builder.class)
+public final class CredentialsSpt {
+    private final Optional<String> id;
 
     private final Map<String, Object> additionalProperties;
 
-    private ApplePayTokenizeRequest(
-            Optional<ApplePayMethodToken> applePaymentMethodToken, Map<String, Object> additionalProperties) {
-        this.applePaymentMethodToken = applePaymentMethodToken;
+    private CredentialsSpt(Optional<String> id, Map<String, Object> additionalProperties) {
+        this.id = id;
         this.additionalProperties = additionalProperties;
     }
 
-    @JsonProperty("apple_payment_method_token")
-    public Optional<ApplePayMethodToken> getApplePaymentMethodToken() {
-        return applePaymentMethodToken;
+    @JsonProperty("id")
+    public Optional<String> getId() {
+        return id;
     }
 
     @java.lang.Override
     public boolean equals(Object other) {
         if (this == other) return true;
-        return other instanceof ApplePayTokenizeRequest && equalTo((ApplePayTokenizeRequest) other);
+        return other instanceof CredentialsSpt && equalTo((CredentialsSpt) other);
     }
 
     @JsonAnyGetter
@@ -46,13 +45,13 @@ public final class ApplePayTokenizeRequest {
         return this.additionalProperties;
     }
 
-    private boolean equalTo(ApplePayTokenizeRequest other) {
-        return applePaymentMethodToken.equals(other.applePaymentMethodToken);
+    private boolean equalTo(CredentialsSpt other) {
+        return id.equals(other.id);
     }
 
     @java.lang.Override
     public int hashCode() {
-        return Objects.hash(this.applePaymentMethodToken);
+        return Objects.hash(this.id);
     }
 
     @java.lang.Override
@@ -66,31 +65,41 @@ public final class ApplePayTokenizeRequest {
 
     @JsonIgnoreProperties(ignoreUnknown = true)
     public static final class Builder {
-        private Optional<ApplePayMethodToken> applePaymentMethodToken = Optional.empty();
+        private Optional<String> id = Optional.empty();
 
         @JsonAnySetter
         private Map<String, Object> additionalProperties = new HashMap<>();
 
         private Builder() {}
 
-        public Builder from(ApplePayTokenizeRequest other) {
-            applePaymentMethodToken(other.getApplePaymentMethodToken());
+        public Builder from(CredentialsSpt other) {
+            id(other.getId());
             return this;
         }
 
-        @JsonSetter(value = "apple_payment_method_token", nulls = Nulls.SKIP)
-        public Builder applePaymentMethodToken(Optional<ApplePayMethodToken> applePaymentMethodToken) {
-            this.applePaymentMethodToken = applePaymentMethodToken;
+        @JsonSetter(value = "id", nulls = Nulls.SKIP)
+        public Builder id(Optional<String> id) {
+            this.id = id;
             return this;
         }
 
-        public Builder applePaymentMethodToken(ApplePayMethodToken applePaymentMethodToken) {
-            this.applePaymentMethodToken = Optional.ofNullable(applePaymentMethodToken);
+        public Builder id(String id) {
+            this.id = Optional.ofNullable(id);
             return this;
         }
 
-        public ApplePayTokenizeRequest build() {
-            return new ApplePayTokenizeRequest(applePaymentMethodToken, additionalProperties);
+        public CredentialsSpt build() {
+            return new CredentialsSpt(id, additionalProperties);
+        }
+
+        public Builder additionalProperty(String key, Object value) {
+            this.additionalProperties.put(key, value);
+            return this;
+        }
+
+        public Builder additionalProperties(Map<String, Object> additionalProperties) {
+            this.additionalProperties.putAll(additionalProperties);
+            return this;
         }
     }
 }
