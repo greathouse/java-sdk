@@ -22,3 +22,6 @@ generated/
 
 bin
 build
+gradle.properties
+/publish_key.gpg
+/armored_key.asc
