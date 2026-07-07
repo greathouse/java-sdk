@@ -1,7 +1,7 @@
 # BasisTheory Java Library
 
-[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2FBasis-Theory%2Fjava-sdk)
-[![Maven Central](https://img.shields.io/maven-central/v/dev.basis-theory/basis-theory-java-sdk)](https://central.sonatype.com/artifact/dev.basis-theory/basis-theory-java-sdk)
+[![fern shield](https://img.shields.io/badge/%F0%9F%8C%BF-Built%20with%20Fern-brightgreen)](https://buildwithfern.com?utm_source=github&utm_medium=github&utm_campaign=readme&utm_source=https%3A%2F%2Fgithub.com%2Fgreathouse%2Fjava-sdk)
+[![Maven Central](https://img.shields.io/maven-central/v/com.greenmoonsoftware/dark-bt)](https://central.sonatype.com/artifact/com.greenmoonsoftware/dark-bt)
 
 The BasisTheory Java library provides convenient access to the BasisTheory APIs from Java.
 
@@ -28,7 +28,7 @@ API reference documentation is available [here](https://api.basistheory.com).
 
 ## Reference
 
-A full reference for this library is available [here](https://github.com/Basis-Theory/java-sdk/blob/HEAD/./reference.md).
+A full reference for this library is available [here](https://github.com/greathouse/java-sdk/blob/HEAD/./reference.md).
 
 ## Usage
 
@@ -223,7 +223,7 @@ Add the dependency in your `build.gradle` file:
 
 ```groovy
 dependencies {
-  implementation 'dev.basis-theory:basis-theory-java-sdk:0.0.1'
+  implementation 'com.greenmoonsoftware:dark-bt:0.0.1'
 }
 ```
 
@@ -233,8 +233,8 @@ Add the dependency in your `pom.xml` file:
 
 ```xml
 <dependency>
-  <groupId>dev.basis-theory</groupId>
-  <artifactId>basis-theory-java-sdk</artifactId>
+  <groupId>com.greenmoonsoftware</groupId>
+  <artifactId>dark-bt</artifactId>
   <version>0.0.1</version>
 </dependency>
 ```
