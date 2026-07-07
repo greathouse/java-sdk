@@ -1,69 +1,25 @@
 name: Release
-# Releases use two GitHub Apps (ENG-11425): bt-version-tagger (TAG env) cuts the
-# tag; bt_semantic_release writes the version bump + changelog back to master.
+# Publishing is triggered by pushing a semantic-version tag (e.g. 7.0.0). The
+# tag name is the release version, passed to Gradle via NEW_TAG.
 
 on:
   push:
-    branches: [master]
+    tags:
+      - "*.*.*"
 
 jobs:
-  cut-tag:
-    name: Cut tag
-    runs-on: ubuntu-latest
-    environment: TAG
-    outputs:
-      new_tag: ${{ steps.tag-version.outputs.new_tag }}
-      release_type: ${{ steps.tag-version.outputs.release_type }}
-      changelog: ${{ steps.tag-version.outputs.changelog }}
-    steps:
-      - name: Mint tag-app token
-        id: tag-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
-        with:
-          app-id: ${{ vars.GH_TAG_APP_ID }}
-          private-key: ${{ secrets.GH_APP_TAG_KEY }}
-
-      - name: Checkout
-        uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
-        with:
-          fetch-depth: 0
-
-      - name: Bump version and push tag
-        id: tag-version
-        uses: mathieudutour/github-tag-action@a22cf08638b34d5badda920f9daf6e72c477b07b # v6.2
-        with:
-          github_token: ${{ steps.tag-token.outputs.token }}
-          default_bump: false
-          tag_prefix: ""
-
   release:
-    name: Publish & write back
-    needs: cut-tag
-    if: ${{ needs.cut-tag.outputs.release_type != '' }}
+    name: Publish
     runs-on: ubuntu-latest
     environment: PROD
     permissions:
       contents: write
       packages: write
     steps:
-      - name: Start Deploy Message
-        uses: Basis-Theory/public-github-actions/deploy-slack-action@12362db6b1ad6b524d28c47a6489c3e73ecd656a # master
-        with:
-          slack-api-token: ${{ secrets.SLACK_DUCKBOT_API_KEY }}
-          channel: ${{ vars.SLACK_DUCKBOT_RELEASE_CHANNEL_ID }}
-
-      - name: Mint semantic-release app token
-        id: app-token
-        uses: actions/create-github-app-token@bcd2ba49218906704ab6c1aa796996da409d3eb1 # v3
-        with:
-          app-id: ${{ vars.SEMANTIC_RELEASE_APP_ID }}
-          private-key: ${{ secrets.SEMANTIC_RELEASE_APP_PRIVATE_KEY }}
-
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
         with:
           fetch-depth: 0
-          token: ${{ steps.app-token.outputs.token }}
 
       - name: Set up Java
         id: setup-jre
@@ -72,38 +28,11 @@ jobs:
           java-version: "11"
           architecture: x64
 
-      # GH Packages publish uses the native GITHUB_TOKEN (packages: write), not an
-      # app token — the app token is only for checkout + the changelog write-back.
+      # GH Packages publish uses the native GITHUB_TOKEN (packages: write).
       - name: Publish to GH Packages
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          NEW_TAG: ${{ needs.cut-tag.outputs.new_tag }}
+          NEW_TAG: ${{ github.ref_name }}
         run: |
+          ./.publish/prepare.sh
           ./gradlew compileJava publish -Pversion="${NEW_TAG}"
-
-      - name: Commit files
-        env:
-          CHANGELOG: ${{ needs.cut-tag.outputs.changelog }}
-          NEW_TAG: ${{ needs.cut-tag.outputs.new_tag }}
-        run: |
-          git config --local user.email "platform@basistheory.com"
-          git config --local user.name "github-actions[bot]"
-
-          printf '%s\n' "$CHANGELOG" | cat - CHANGELOG.md > temp && mv temp CHANGELOG.md
-
-          git add CHANGELOG.md
-          git commit -m "chore(release): updating version and changelog ${NEW_TAG} [skip ci]" || echo "Nothing to update"
-
-      - name: Push changes
-        uses: ad-m/github-push-action@881a6320fdb16eb5318c5054f31c218aec2b324c # master
-        with:
-          github_token: ${{ steps.app-token.outputs.token }}
-          branch: ${{ github.ref }}
-
-      - name: Stop Deploy Message
-        if: always()
-        uses: Basis-Theory/public-github-actions/deploy-slack-action@12362db6b1ad6b524d28c47a6489c3e73ecd656a # master
-        with:
-          slack-api-token: ${{ secrets.SLACK_DUCKBOT_API_KEY }}
-          channel: ${{ vars.SLACK_DUCKBOT_RELEASE_CHANNEL_ID }}
-          status: "done"
