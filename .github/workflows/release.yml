@@ -13,8 +13,7 @@ jobs:
     runs-on: ubuntu-latest
     environment: PROD
     permissions:
-      contents: write
-      packages: write
+      contents: read
     steps:
       - name: Checkout
         uses: actions/checkout@f43a0e5ff2bd294095638e18286ca9a3d1956744 # v3
@@ -28,10 +27,12 @@ jobs:
           java-version: "11"
           architecture: x64
 
-      # GH Packages publish uses the native GITHUB_TOKEN (packages: write).
-      - name: Publish to GH Packages
+      - name: Publish to Sonatype Central
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          MAVEN_USERNAME: ${{ secrets.MAVEN_USERNAME }}
+          MAVEN_PASSWORD: ${{ secrets.MAVEN_PASSWORD }}
+          MAVEN_SIGNATURE_SECRET_KEY: ${{ secrets.MAVEN_SIGNATURE_SECRET_KEY }}
+          MAVEN_SIGNATURE_PASSWORD: ${{ secrets.MAVEN_SIGNATURE_PASSWORD }}
           NEW_TAG: ${{ github.ref_name }}
         run: |
           ./gradlew clean sonatypeCentralUpload -Pversion="${NEW_TAG}" -x test
