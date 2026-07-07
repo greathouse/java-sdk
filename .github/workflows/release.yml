@@ -34,5 +34,4 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           NEW_TAG: ${{ github.ref_name }}
         run: |
-          ./.publish/prepare.sh
-          ./gradlew compileJava publish -Pversion="${NEW_TAG}"
+          ./gradlew clean sonatypeCentralUpload -Pversion="${NEW_TAG}" -x test
